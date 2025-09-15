@@ -1,0 +1,23 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Чат";
+}
+
+<div class="chat-container">
+
+    <div class="chat-messages" id="chat-box">
+        @foreach (var msg in Model.Messages)
+        {
+            <div class="chat-message @(msg.User == "Anon" ? "self" : "other")">
+                <b>@msg.User:</b> @msg.Text
+            </div>
+        }
+    </div>
+
+    <form method="post" class="chat-input">
+        <input type="text" name="messageText" placeholder="Введите сообщение..." />
+        <button type="submit">Отправить</button>
+    </form>
+
+</div>
