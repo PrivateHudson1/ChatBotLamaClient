@@ -15,9 +15,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rashe\\source\\repos\\ChatBotLlama\\ChatBotLlama\\ChatBotLlama.csproj",
-      "projectName": "ChatBotLlama",
-      "projectPath": "C:\\Users\\rashe\\source\\repos\\ChatBotLlama\\ChatBotLlama\\ChatBotLlama.csproj",
+      "projectUniqueName": "C:\\Users\\rashe\\source\\repos\\ChatBotLlama\\ChatBotLlama\\ChatBotLlamaCLient.csproj",
+      "projectName": "ChatBotLlamaCLient",
+      "projectPath": "C:\\Users\\rashe\\source\\repos\\ChatBotLlama\\ChatBotLlama\\ChatBotLlamaCLient.csproj",
       "packagesPath": "C:\\Users\\rashe\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\rashe\\source\\repos\\ChatBotLlama\\ChatBotLlama\\obj\\",
       "projectStyle": "PackageReference",

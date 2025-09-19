@@ -6,18 +6,78 @@
 
 <div class="chat-container">
 
+
+
+<div class="chat-container">
     <div class="chat-messages" id="chat-box">
         @foreach (var msg in Model.Messages)
         {
-            <div class="chat-message @(msg.User == "Anon" ? "self" : "other")">
+            <div class="chat-message @(msg.User == "User" ? "self" : "other")">
                 <b>@msg.User:</b> @msg.Text
             </div>
         }
     </div>
 
-    <form method="post" class="chat-input">
-        <input type="text" name="messageText" placeholder="Введите сообщение..." />
+    <form id="chat-form" class="chat-input">
+        <input type="text" id="message-input" name="messageText" placeholder="Введите сообщение..." />
         <button type="submit">Отправить</button>
     </form>
+</div>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+            
+    
+        async function start() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+            } catch (err) {
+                console.log(err);
+                setTimeout(start, 5000);
+            }
+        };
+
+      
+        connection.on("ReceiveMessage", (user, message) => {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
+            messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+     
+        document.getElementById("chat-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            const messageInput = document.getElementById("message-input");
+            const message = messageInput.value.trim();
+            
+            if (message) {
+              
+                try {
+                    await connection.invoke("SendMessage", message);
+                    messageInput.value = '';
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+
+   
+        connection.onclose(async () => {
+            await start();
+        });
+
+  
+        start();
+    </script>
+    }
 </div>

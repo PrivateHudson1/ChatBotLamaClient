@@ -1,11 +1,14 @@
 using ChatBotLlama.Models;
+using ChatBotLlamaClient.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 
 namespace ChatBotLlama.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ApiSettings _apiSettings;
         private readonly ILogger<IndexModel> _logger;
         private static List<Message> _messages = new();
 
@@ -14,8 +17,9 @@ namespace ChatBotLlama.Pages
         public List<Message> Messages { get; private set; } = new();
 
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, IOptions<ApiSettings> apiSettings)
         {
+            _apiSettings = apiSettings.Value;
             _logger = logger;
         }
 
@@ -30,11 +34,11 @@ namespace ChatBotLlama.Pages
             {
                 _messages.Add(new Message
                 {
-                    User = "Anon", // тут можно добавить авторизацию позже
+                    User = "Anon", 
                     Text = MessageText
                 });
             }
-            return RedirectToPage(); // обновляем страницу (чтобы отобразить новое сообщение)
+            return RedirectToPage(); 
         }
     }
 }

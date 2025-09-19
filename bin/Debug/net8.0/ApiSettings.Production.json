@@ -1,0 +1,7 @@
+{
+  "ApiConnect": {
+    "BaseUrl": "...",
+    "ChatHubUrl": ".../chatHub",
+    "Timeout": 60
+  }
+}
