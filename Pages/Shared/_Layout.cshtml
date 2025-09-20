@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChatBotLlama.styles.css" asp-append-version="true" />
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval'; 
+                   connect-src 'self' http://localhost:5000 https://localhost:5000
+                    http://localhost:5104 https://localhost:5104
+                    http://localhost:5164 https://localhost:5164
+                    http://localhost:7104 https://localhost:7104
+                    ws://localhost:5000 wss://localhost:5000
+                    ws://localhost:5104 wss://localhost:5104
+                    ws://localhost:5164 wss://localhost:5164
+                    ws://localhost:7104 wss://localhost:7104;
+                   style-src 'self' 'unsafe-inline';
+                   script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval';">
 </head>
 <body>
     <header>

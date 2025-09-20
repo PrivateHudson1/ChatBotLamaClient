@@ -26,6 +26,9 @@ namespace ChatBotLlama.Pages
         public void OnGet()
         {
             Messages = _messages;
+            ViewData["ApiBaseUrl"] = _apiSettings.BaseUrl;
+            ViewData["ChatHubUrl"] = _apiSettings.ChatHubUrl;
+            ViewData["Timeout"] = _apiSettings.Timeout;
         }
 
         public IActionResult OnPost()

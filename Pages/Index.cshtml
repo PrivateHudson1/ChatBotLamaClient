@@ -4,6 +4,8 @@
     ViewData["Title"] = "Чат";
 }
 
+
+
 <div class="chat-container">
 
 
@@ -27,8 +29,16 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
+
+        const chatHubUrl = '@Model.ViewData["ChatHubUrl"]';
+        const apiBaseUrl = '@Model.ViewData["ApiBaseUrl"]';
+        const timeout = @Model.ViewData["Timeout"];
+
+        console.log('Connect to:', chatHubUrl);
+        console.log('Timeout:', timeout, 'ms');
+
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
+            .withUrl(chatHubUrl)
             .configureLogging(signalR.LogLevel.Information)
             .build();
             
