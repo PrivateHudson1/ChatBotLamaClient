@@ -33,6 +33,7 @@
         const chatHubUrl = '@Model.ViewData["ChatHubUrl"]';
         const apiBaseUrl = '@Model.ViewData["ApiBaseUrl"]';
         const timeout = @Model.ViewData["Timeout"];
+        const user = "Hudson";
 
         console.log('Connect to:', chatHubUrl);
         console.log('Timeout:', timeout, 'ms');
@@ -69,7 +70,14 @@
             
             const messageInput = document.getElementById("message-input");
             const message = messageInput.value.trim();
-            
+  
+                const chatBox = document.getElementById("chat-box");
+                const messageDiv = document.createElement("div");
+                messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
+                messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
             if (message) {
               
                 try {
