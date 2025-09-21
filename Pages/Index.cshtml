@@ -6,7 +6,6 @@
 
 
 
-<div class="chat-container">
 
 
 
@@ -21,8 +20,8 @@
     </div>
 
     <form id="chat-form" class="chat-input">
-        <input type="text" id="message-input" name="messageText" placeholder="Введите сообщение..." />
-        <button type="submit">Отправить</button>
+        <textarea rows="1" id="message-input" name="messageText" placeholder="Введите сообщение..." ></textarea>
+        <button type="submit" id="sendButton">Отправить</button>
     </form>
 </div>
 
@@ -30,10 +29,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
 
+        const textarea = document.getElementById("message-input");
         const chatHubUrl = '@Model.ViewData["ChatHubUrl"]';
         const apiBaseUrl = '@Model.ViewData["ApiBaseUrl"]';
         const timeout = @Model.ViewData["Timeout"];
         const user = "Hudson";
+        
 
         console.log('Connect to:', chatHubUrl);
         console.log('Timeout:', timeout, 'ms');
@@ -42,8 +43,30 @@
             .withUrl(chatHubUrl)
             .configureLogging(signalR.LogLevel.Information)
             .build();
-            
+
+
+        textarea.addEventListener("input",() => {
+            textarea.style.height = "auto";
+            const newHeight = Math.min(textarea.scrollHeight, 160); 
+
+            textarea.style.height = newHeight + "px";
+
+          
+            if (textarea.scrollHeight > 160) {
+                textarea.style.overflowY = "auto";
+            } else {
+                textarea.style.overflowY = "hidden";
+            }
+        });      
     
+        textarea.addEventListener("keydown", function(event) {
+            if(event.key == 'Enter' && !event.shiftKey)
+            {
+                event.preventDefault();
+                document.getElementById("chat-form").dispatchEvent(new Event('submit'));
+            }
+        });
+
         async function start() {
             try {
                 await connection.start();
@@ -54,8 +77,29 @@
             }
         };
 
-      
+        function autoResize(textarea)
+        {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight)+ 'px';
+        }
+
+        function resetMessageInput() {
+            const messageInput = document.getElementById("message-input");
+            
+           
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            messageInput.style.overflowY = 'hidden';
+            messageInput.style.height = '40px';
+
+           
+
+            messageInput.focus();
+        }
         connection.on("ReceiveMessage", (user, message) => {
+
+
+
             const chatBox = document.getElementById("chat-box");
             const messageDiv = document.createElement("div");
             messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
@@ -64,38 +108,37 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         });
 
-     
         document.getElementById("chat-form").addEventListener("submit", async function (e) {
             e.preventDefault();
-            
+
+            autoResize(this);
+
             const messageInput = document.getElementById("message-input");
             const message = messageInput.value.trim();
   
-                const chatBox = document.getElementById("chat-box");
-                const messageDiv = document.createElement("div");
-                messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
-                messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
-                chatBox.appendChild(messageDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
+            messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
 
             if (message) {
               
                 try {
                     await connection.invoke("SendMessage", message);
-                    messageInput.value = '';
+                    resetMessageInput();
                 } catch (err) {
                     console.error(err);
                 }
             }
         });
-
-   
+  
         connection.onclose(async () => {
             await start();
         });
 
-  
         start();
     </script>
     }
-</div>
+
