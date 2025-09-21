@@ -26,10 +26,16 @@
 </div>
 
 @section Scripts {
+
+
+
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
 
         const textarea = document.getElementById("message-input");
+        
         const chatHubUrl = '@Model.ViewData["ChatHubUrl"]';
         const apiBaseUrl = '@Model.ViewData["ApiBaseUrl"]';
         const timeout = @Model.ViewData["Timeout"];
@@ -43,6 +49,34 @@
             .withUrl(chatHubUrl)
             .configureLogging(signalR.LogLevel.Information)
             .build();
+
+
+
+
+        async function sendMessageTo()
+        {
+            
+
+            
+            const message = textarea.value.trim();
+            autoResize(textarea);
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `chat-message ${user === "Hudson" ? "self" : "other"}`;
+            messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (message) {
+
+                try {
+                    await connection.invoke("SendMessage", message);
+                    resetMessageInput();
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
 
 
         textarea.addEventListener("input",() => {
@@ -62,9 +96,10 @@
         textarea.addEventListener("keydown", function(event) {
             if(event.key == 'Enter' && !event.shiftKey)
             {
+                console.log('Enter without Shift - preventing default and sending');
                 event.preventDefault();
-                document.getElementById("chat-form").dispatchEvent(new Event('submit'));
-            }
+                sendMessageTo(); 
+            } 
         });
 
         async function start() {
@@ -96,6 +131,7 @@
 
             messageInput.focus();
         }
+
         connection.on("ReceiveMessage", (user, message) => {
 
 
@@ -109,35 +145,19 @@
         });
 
         document.getElementById("chat-form").addEventListener("submit", async function (e) {
+            console.log('Form submit event fired');
             e.preventDefault();
-
-            autoResize(this);
-
-            const messageInput = document.getElementById("message-input");
-            const message = messageInput.value.trim();
-  
-            const chatBox = document.getElementById("chat-box");
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `chat-message ${user === "User" ? "self" : "other"}`;
-            messageDiv.innerHTML = `<b>${user}:</b> ${message}`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            if (message) {
-              
-                try {
-                    await connection.invoke("SendMessage", message);
-                    resetMessageInput();
-                } catch (err) {
-                    console.error(err);
-                }
-            }
+            sendMessageTo();
         });
   
         connection.onclose(async () => {
             await start();
         });
 
+
+
+       
+            
         start();
     </script>
     }
