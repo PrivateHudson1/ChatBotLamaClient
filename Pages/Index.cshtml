@@ -33,15 +33,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
-
         const textarea = document.getElementById("message-input");
-        
         const chatHubUrl = '@Model.ViewData["ChatHubUrl"]';
         const apiBaseUrl = '@Model.ViewData["ApiBaseUrl"]';
         const timeout = @Model.ViewData["Timeout"];
         const user = "Hudson";
         
-
         console.log('Connect to:', chatHubUrl);
         console.log('Timeout:', timeout, 'ms');
 
@@ -51,13 +48,36 @@
             .build();
 
 
+        function autoResize(textarea)
+        {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight)+ 'px';
+        }
 
+        function resetMessageInput() {
+            const messageInput = document.getElementById("message-input");
+
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            messageInput.style.overflowY = 'hidden';
+            messageInput.style.height = '40px';
+
+
+        }
+
+        async function start() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+            } catch (err) {
+                console.log(err);
+                setTimeout(start, 5000);
+            }
+        };
 
         async function sendMessageTo()
         {
-            
 
-            
             const message = textarea.value.trim();
             autoResize(textarea);
             const chatBox = document.getElementById("chat-box");
@@ -70,8 +90,8 @@
             if (message) {
 
                 try {
-                    await connection.invoke("SendMessage", message);
                     resetMessageInput();
+                    await connection.invoke("SendMessage", message);
                 } catch (err) {
                     console.error(err);
                 }
@@ -102,38 +122,15 @@
             } 
         });
 
-        async function start() {
-            try {
-                await connection.start();
-                console.log("SignalR Connected.");
-            } catch (err) {
-                console.log(err);
-                setTimeout(start, 5000);
-            }
-        };
+        document.getElementById("chat-form").addEventListener("submit", async function (e) {
+            console.log('Form submit event fired');
+            e.preventDefault();
+            sendMessageTo();
+        });
 
-        function autoResize(textarea)
-        {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight)+ 'px';
-        }
 
-        function resetMessageInput() {
-            const messageInput = document.getElementById("message-input");
-            
-           
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            messageInput.style.overflowY = 'hidden';
-            messageInput.style.height = '40px';
-
-           
-
-            messageInput.focus();
-        }
 
         connection.on("ReceiveMessage", (user, message) => {
-
 
 
             const chatBox = document.getElementById("chat-box");
@@ -144,19 +141,10 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         });
 
-        document.getElementById("chat-form").addEventListener("submit", async function (e) {
-            console.log('Form submit event fired');
-            e.preventDefault();
-            sendMessageTo();
-        });
-  
         connection.onclose(async () => {
             await start();
         });
 
-
-
-       
             
         start();
     </script>

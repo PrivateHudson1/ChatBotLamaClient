@@ -105,9 +105,9 @@ html {
     padding: 8px;
     background: #f0f0f0;
     border-radius: 0 0 8px 8px;
-    min-height: 60px; /* Фиксированная минимальная высота */
-    flex-shrink: 0; /* Не позволяет уменьшаться */
-    align-items: flex-end; /* Выравниваем элементы по низу */
+    min-height: 60px; 
+    flex-shrink: 0; 
+    align-items: flex-end; 
 }
 
 .chat-input input[type="text"] {
