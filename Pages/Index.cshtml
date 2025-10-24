@@ -92,15 +92,37 @@
             }
         };
 
-        function updateUI(remaining) {
-            const span = document.getElementById("remaining-count");
-            span.classList.remove("remaining-high", "remaining-medium", "remaining-low");
+           function updateUI(remaining) {
+         
+            if (remaining == null || isNaN(remaining)) {
+                console.warn("updateUI: remaining is not a number:", remaining);
+                return;
+            }
 
-             span.textContent = remaining;
+            remaining = Math.max(0, Math.floor(remaining));
 
-            if (remaining > 20) span.classList.add("remaining-high");
-            else if (remaining > 10) span.classList.add("remaining-medium");
-            else span.classList.add("remaining-low");
+         
+            countElement.textContent = remaining;
+
+            countElement.classList.remove("remaining-high", "remaining-medium", "remaining-low");
+            if (remaining > 20) countElement.classList.add("remaining-high");
+            else if (remaining > 10) countElement.classList.add("remaining-medium");
+            else countElement.classList.add("remaining-low");
+
+      
+            const percent = Math.round((remaining / maxRequests) * 100);
+            progressBar.style.width = percent + "%";
+
+            progressBar.style.transition = "width 0.5s ease, background-color 0.3s ease";
+
+       
+            progressBar.classList.remove("progress-high", "progress-medium", "progress-low");
+            if (remaining > 20) progressBar.classList.add("progress-high");
+            else if (remaining > 10) progressBar.classList.add("progress-medium");
+            else progressBar.classList.add("progress-low");
+
+
+             console.debug("updateUI:", remaining, percent + "%");
         }
 
         async function sendMessageTo()
