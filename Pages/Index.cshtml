@@ -96,6 +96,8 @@
             const span = document.getElementById("remaining-count");
             span.classList.remove("remaining-high", "remaining-medium", "remaining-low");
 
+             span.textContent = remaining;
+
             if (remaining > 20) span.classList.add("remaining-high");
             else if (remaining > 10) span.classList.add("remaining-medium");
             else span.classList.add("remaining-low");
