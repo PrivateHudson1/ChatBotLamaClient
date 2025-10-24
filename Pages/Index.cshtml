@@ -4,9 +4,20 @@
     ViewData["Title"] = "Чат";
 }
 
+<div class="container">
 
+    <div class="title">
+        <span id="titleSpan">Ваш дневной лимит запросов</span>
+    </div>
 
+    <div class="progress-wrapper">
+        <div id="progress-bar"></div>
+    </div>
 
+    <div class="counter">
+        Осталось: <span id="remaining-count">30</span> / 30
+    </div>
+</div>
 
 
 <div class="chat-container">
@@ -25,10 +36,11 @@
     </form>
 </div>
 
+
+
+
+
 @section Scripts {
-
-
-
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
@@ -39,6 +51,11 @@
         const timeout = @Model.ViewData["Timeout"];
         const user = "Hudson";
         
+        const maxRequests = 30;
+        const countElement = document.getElementById("remaining-count");
+        const progressBar = document.getElementById("progress-bar");
+
+
         console.log('Connect to:', chatHubUrl);
         console.log('Timeout:', timeout, 'ms');
 
@@ -74,6 +91,15 @@
                 setTimeout(start, 5000);
             }
         };
+
+        function updateUI(remaining) {
+            const span = document.getElementById("remaining-count");
+            span.classList.remove("remaining-high", "remaining-medium", "remaining-low");
+
+            if (remaining > 20) span.classList.add("remaining-high");
+            else if (remaining > 10) span.classList.add("remaining-medium");
+            else span.classList.add("remaining-low");
+        }
 
         async function sendMessageTo()
         {
@@ -128,7 +154,9 @@
             sendMessageTo();
         });
 
-
+        connection.on("UpdateRemainingRequests", function (remaining) {
+            updateUI(remaining);
+        });
 
         connection.on("ReceiveMessage", (user, message) => {
 
@@ -148,5 +176,7 @@
             
         start();
     </script>
+
+
     }
 
