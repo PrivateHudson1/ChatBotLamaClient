@@ -4,9 +4,20 @@
     ViewData["Title"] = "Чат";
 }
 
+<div class="container">
 
+    <div class="title">
+        <span id="titleSpan">Ваш дневной лимит запросов</span>
+    </div>
 
+    <div class="progress-wrapper">
+        <div id="progress-bar"></div>
+    </div>
 
+    <div class="counter">
+        Осталось: <span id="remaining-count">30</span> / 30
+    </div>
+</div>
 
 
 <div class="chat-container">
@@ -25,10 +36,11 @@
     </form>
 </div>
 
+
+
+
+
 @section Scripts {
-
-
-
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
@@ -39,6 +51,11 @@
         const timeout = @Model.ViewData["Timeout"];
         const user = "Hudson";
         
+        const maxRequests = 30;
+        const countElement = document.getElementById("remaining-count");
+        const progressBar = document.getElementById("progress-bar");
+
+
         console.log('Connect to:', chatHubUrl);
         console.log('Timeout:', timeout, 'ms');
 
@@ -74,6 +91,39 @@
                 setTimeout(start, 5000);
             }
         };
+
+           function updateUI(remaining) {
+         
+            if (remaining == null || isNaN(remaining)) {
+                console.warn("updateUI: remaining is not a number:", remaining);
+                return;
+            }
+
+            remaining = Math.max(0, Math.floor(remaining));
+
+         
+            countElement.textContent = remaining;
+
+            countElement.classList.remove("remaining-high", "remaining-medium", "remaining-low");
+            if (remaining > 20) countElement.classList.add("remaining-high");
+            else if (remaining > 10) countElement.classList.add("remaining-medium");
+            else countElement.classList.add("remaining-low");
+
+      
+            const percent = Math.round((remaining / maxRequests) * 100);
+            progressBar.style.width = percent + "%";
+
+            progressBar.style.transition = "width 0.5s ease, background-color 0.3s ease";
+
+       
+            progressBar.classList.remove("progress-high", "progress-medium", "progress-low");
+            if (remaining > 20) progressBar.classList.add("progress-high");
+            else if (remaining > 10) progressBar.classList.add("progress-medium");
+            else progressBar.classList.add("progress-low");
+
+
+             console.debug("updateUI:", remaining, percent + "%");
+        }
 
         async function sendMessageTo()
         {
@@ -128,7 +178,9 @@
             sendMessageTo();
         });
 
-
+        connection.on("UpdateRemainingRequests", function (remaining) {
+            updateUI(remaining);
+        });
 
         connection.on("ReceiveMessage", (user, message) => {
 
@@ -148,5 +200,7 @@
             
         start();
     </script>
+
+
     }
 

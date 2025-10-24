@@ -12,10 +12,19 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+.title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #4caf50; 
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.5), 0 0 10px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3);
+    text-align: center; 
+    margin-bottom: 15px; 
+}
+
 
 .chat-container {
     width: 1100px;
-    height: 950px;
+    height: 850px;
     margin: 20px auto;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -32,7 +41,7 @@ html {
     resize: none;
     overflow-y: auto;
     min-height: 40px;
-    max-height: 120px; /* Уменьшите максимальную высоту */
+    max-height: 120px; 
     padding: 10px;
     font-size: 14px;
     border-radius: 8px;
@@ -64,8 +73,8 @@ html {
     outline: 2px solid #4CAF50; 
 }
 .chat-messages {
-    flex: 1; /* Занимает всё доступное пространство */
-    overflow-y: auto; /* Скролл только внутри этой области */
+    flex: 1; 
+    overflow-y: auto; 
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
@@ -150,4 +159,56 @@ html {
 
 body {
     overflow-y: hidden; 
+}
+
+
+.title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.progress-wrapper {
+    width: 100%;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+#progress-bar {
+    height: 100%;
+    width: 100%;
+    background: #4caf50;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.counter {
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+#remaining-count {
+    color: #4caf50;
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.5), 0 0 10px rgba(76, 175, 80, 0.4), 0 0 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.4s ease;
+}
+.remaining-high {
+    color: #4caf50;
+    text-shadow: 0 0 6px rgba(76, 175, 80, 0.6);
+}
+
+.remaining-medium {
+    color: #ffb300;
+    text-shadow: 0 0 6px rgba(255, 179, 0, 0.6);
+}
+
+.remaining-low {
+    color: #f44336;
+    text-shadow: 0 0 8px rgba(244, 67, 54, 0.7);
 }
